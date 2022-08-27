@@ -1,4 +1,4 @@
-import { AppShell, useMantineTheme } from '@mantine/core';
+import { AppShell, Container, useMantineTheme } from '@mantine/core';
 import { ReactNode, useState } from 'react';
 
 import MyHeader from './Header';
@@ -24,7 +24,7 @@ export default function Layout({ children }: Props) {
       asideOffsetBreakpoint='sm'
       header={<MyHeader />}
     >
-      {children}
+      <Container>{children}</Container>
     </AppShell>
   );
 }

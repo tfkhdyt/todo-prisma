@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Box,
+  Container,
   Header,
   Text,
   useMantineColorScheme,
@@ -15,32 +16,38 @@ function MyHeader() {
 
   return (
     <Header height={70} p='md'>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          height: '100%',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <SiTodoist size={24} />
-          <Text weight='bold' size='xl' ml='xs'>
-            To Do List
-          </Text>
+      <Container>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <SiTodoist size={24} />
+            <Text weight='bold' size='xl' ml='xs'>
+              To Do List
+            </Text>
+          </Box>
+          <Box>
+            <ActionIcon
+              variant='outline'
+              color={dark ? 'yellow' : 'blue'}
+              onClick={() => toggleColorScheme()}
+              title='Toggle color scheme'
+              size='lg'
+            >
+              {dark ? (
+                <BsFillSunFill size={18} />
+              ) : (
+                <BsFillMoonFill size={18} />
+              )}
+            </ActionIcon>
+          </Box>
         </Box>
-        <Box>
-          <ActionIcon
-            variant='outline'
-            color={dark ? 'yellow' : 'blue'}
-            onClick={() => toggleColorScheme()}
-            title='Toggle color scheme'
-            size='lg'
-          >
-            {dark ? <BsFillSunFill size={18} /> : <BsFillMoonFill size={18} />}
-          </ActionIcon>
-        </Box>
-      </div>
+      </Container>
     </Header>
   );
 }

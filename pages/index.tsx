@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Checkbox,
   Group,
@@ -9,7 +10,7 @@ import {
 import { openConfirmModal } from '@mantine/modals';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import { useSession } from 'next-auth/react';
-import { AiOutlineCheck } from 'react-icons/ai';
+import { AiFillAlert, AiOutlineCheck } from 'react-icons/ai';
 import { FaTrashAlt } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
 import useSWR from 'swr';
@@ -116,7 +117,6 @@ const Home = () => {
 
   return (
     <Layout>
-      {status === 'loading' && <Loading />}
       {status === 'authenticated' ? (
         <>
           <AddTodo mutate={mutate} />
@@ -164,9 +164,19 @@ const Home = () => {
             </div>
           )}
         </>
+      ) : status === 'loading' ? (
+        <Loading />
       ) : (
         <Group position='center'>
-          <Text>You should sign in first</Text>
+          <Alert
+            icon={<AiFillAlert size={16} />}
+            title='Unauthenticated'
+            color='red'
+            radius='md'
+            sx={{ width: '100%' }}
+          >
+            You should sign in first
+          </Alert>
         </Group>
       )}
     </Layout>

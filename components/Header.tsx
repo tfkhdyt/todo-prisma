@@ -7,11 +7,13 @@ import {
   Text,
   useMantineColorScheme,
 } from '@mantine/core';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import React from 'react';
 import { BsFillMoonFill, BsFillSunFill } from 'react-icons/bs';
-import { GoSignIn, GoSignOut } from 'react-icons/go';
+import { GoSignIn } from 'react-icons/go';
 import { SiTodoist } from 'react-icons/si';
+
+import MyAvatar from './Avatar';
 
 function MyHeader() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -41,14 +43,7 @@ function MyHeader() {
                 Sign in
               </Button>
             ) : (
-              <Button
-                mr='md'
-                leftIcon={<GoSignOut />}
-                color='red'
-                onClick={() => signOut()}
-              >
-                ({session.user?.name}) Sign out
-              </Button>
+              <MyAvatar session={session} />
             )}
             <ActionIcon
               variant='outline'

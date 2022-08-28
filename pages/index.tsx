@@ -121,7 +121,7 @@ const Home = () => {
         <>
           <AddTodo mutate={mutate} />
           <Space h='xl' />
-          {data ? (
+          {data && data.length >= 0 ? (
             data
               .sort((a, b) => (a.id > b.id ? 1 : -1))
               .map((value, idx) => (
@@ -159,9 +159,7 @@ const Home = () => {
                 </Box>
               ))
           ) : (
-            <div style={{ width: '100%', position: 'relative' }}>
-              <LoadingOverlay visible={true} overlayBlur={2} />
-            </div>
+            <Loading />
           )}
         </>
       ) : status === 'loading' ? (

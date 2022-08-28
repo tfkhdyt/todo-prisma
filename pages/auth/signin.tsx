@@ -16,11 +16,7 @@ export default function SignIn({
             {providers &&
               Object.values(providers).map((provider) => (
                 <Button
-                  onClick={() =>
-                    signIn(provider.id, {
-                      callbackUrl: process.env.NEXTAUTH_URL,
-                    })
-                  }
+                  onClick={() => signIn(provider.id)}
                   key={provider.id}
                   color={provider.name === 'Google' ? 'blue' : 'dark'}
                   leftIcon={

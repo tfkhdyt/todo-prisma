@@ -7,7 +7,6 @@ import {
   Text,
   useMantineColorScheme,
 } from '@mantine/core';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
 import React from 'react';
@@ -45,11 +44,9 @@ function MyHeader() {
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {!session ? (
-              <Link href='/auth/signin'>
-                <Button mr='md' leftIcon={<GoSignIn />} component='a'>
-                  Sign in
-                </Button>
-              </Link>
+              <Button mr='md' leftIcon={<GoSignIn />} onClick={() => signIn()}>
+                Sign in
+              </Button>
             ) : (
               <MyAvatar session={session} />
             )}

@@ -16,13 +16,14 @@ import useSWR from 'swr';
 
 import AddTodo from '../components/AddTodo';
 import Layout from '../components/Layout';
+import Loading from '../components/Loading';
 import { Task } from '../types/task';
 
 const fetcher = (link: string) => fetch(link).then((res) => res.json());
 
 const Home = () => {
   const { data, error, mutate } = useSWR<Task[]>('/api/task', fetcher);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const handleChange = async (id: string) => {
     showNotification({
@@ -115,7 +116,8 @@ const Home = () => {
 
   return (
     <Layout>
-      {session ? (
+      {status === 'loading' && <Loading />}
+      {status === 'authenticated' ? (
         <>
           <AddTodo mutate={mutate} />
           <Space h='xl' />

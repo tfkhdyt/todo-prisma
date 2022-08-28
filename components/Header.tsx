@@ -15,11 +15,12 @@ import { GoSignIn } from 'react-icons/go';
 import { SiTodoist } from 'react-icons/si';
 
 import MyAvatar from './Avatar';
+import Loading from './Loading';
 
 function MyHeader() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === 'dark';
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   return (
@@ -43,6 +44,7 @@ function MyHeader() {
             </Text>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {status === 'loading' && <Loading />}
             {!session ? (
               <Button mr='md' leftIcon={<GoSignIn />} onClick={() => signIn()}>
                 Sign in

@@ -1,18 +1,22 @@
 import {
   ActionIcon,
   Box,
+  Button,
   Container,
   Header,
   Text,
   useMantineColorScheme,
 } from '@mantine/core';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import React from 'react';
 import { BsFillMoonFill, BsFillSunFill } from 'react-icons/bs';
+import { GoSignIn, GoSignOut } from 'react-icons/go';
 import { SiTodoist } from 'react-icons/si';
 
 function MyHeader() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === 'dark';
+  const { data: session } = useSession();
 
   return (
     <Header height={70} p='md'>
@@ -31,7 +35,21 @@ function MyHeader() {
               To Do List
             </Text>
           </Box>
-          <Box>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {!session ? (
+              <Button mr='md' leftIcon={<GoSignIn />} onClick={() => signIn()}>
+                Sign in
+              </Button>
+            ) : (
+              <Button
+                mr='md'
+                leftIcon={<GoSignOut />}
+                color='red'
+                onClick={() => signOut()}
+              >
+                ({session.user?.name}) Sign out
+              </Button>
+            )}
             <ActionIcon
               variant='outline'
               color={dark ? 'yellow' : 'blue'}

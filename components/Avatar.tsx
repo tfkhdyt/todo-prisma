@@ -47,7 +47,6 @@ function MyAvatar({ session }: Props) {
     <Menu
       shadow='md'
       // width={400}
-      trigger='hover'
       openDelay={100}
       closeDelay={400}
     >

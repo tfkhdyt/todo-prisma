@@ -7,6 +7,8 @@ import {
   Text,
   useMantineColorScheme,
 } from '@mantine/core';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
 import React from 'react';
 import { BsFillMoonFill, BsFillSunFill } from 'react-icons/bs';
@@ -19,6 +21,7 @@ function MyHeader() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === 'dark';
   const { data: session } = useSession();
+  const router = useRouter();
 
   return (
     <Header height={70} p='md'>
@@ -31,7 +34,10 @@ function MyHeader() {
             justifyContent: 'space-between',
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box
+            sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+            onClick={() => router.push('/')}
+          >
             <SiTodoist size={24} />
             <Text weight='bold' size='xl' ml='xs'>
               To Do List
@@ -39,9 +45,11 @@ function MyHeader() {
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {!session ? (
-              <Button mr='md' leftIcon={<GoSignIn />} onClick={() => signIn()}>
-                Sign in
-              </Button>
+              <Link href='/auth/signin'>
+                <Button mr='md' leftIcon={<GoSignIn />} component='a'>
+                  Sign in
+                </Button>
+              </Link>
             ) : (
               <MyAvatar session={session} />
             )}

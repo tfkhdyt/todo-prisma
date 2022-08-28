@@ -1,13 +1,25 @@
 import { Button, Group, Paper, Stack } from '@mantine/core';
-import { InferGetServerSidePropsType } from 'next';
-import { getProviders, signIn } from 'next-auth/react';
+import { GetServerSideProps } from 'next';
+import { BuiltInProviderType } from 'next-auth/providers';
+import {
+  ClientSafeProvider,
+  getProviders,
+  getSession,
+  LiteralUnion,
+  signIn,
+} from 'next-auth/react';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
 
 import Layout from '../../components/Layout';
 
-export default function SignIn({
-  providers,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+interface Props {
+  providers: Record<
+    LiteralUnion<BuiltInProviderType, string>,
+    ClientSafeProvider
+  > | null;
+}
+
+export default function SignIn({ providers }: Props) {
   return (
     <Layout>
       <Group position='center' sx={{ width: '100%', height: '80vh' }}>
@@ -32,6 +44,17 @@ export default function SignIn({
     </Layout>
   );
 }
-export async function getServerSideProps() {
-  return { props: { providers: await getProviders() } };
-}
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const providers = await getProviders();
+  const session = await getSession({ req });
+  if (session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: { providers } };
+};

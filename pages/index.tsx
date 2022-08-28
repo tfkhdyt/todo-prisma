@@ -1,6 +1,14 @@
-import { Box, Checkbox, LoadingOverlay, Space, Text } from '@mantine/core';
+import {
+  Box,
+  Checkbox,
+  Group,
+  LoadingOverlay,
+  Space,
+  Text,
+} from '@mantine/core';
 import { openConfirmModal } from '@mantine/modals';
 import { showNotification, updateNotification } from '@mantine/notifications';
+import { useSession } from 'next-auth/react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { FaTrashAlt } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
@@ -14,6 +22,7 @@ const fetcher = (link: string) => fetch(link).then((res) => res.json());
 
 const Home = () => {
   const { data, error, mutate } = useSWR<Task[]>('/api/task', fetcher);
+  const { data: session } = useSession();
 
   const handleChange = async (id: string) => {
     showNotification({
@@ -106,44 +115,57 @@ const Home = () => {
 
   return (
     <Layout>
-      <AddTodo mutate={mutate} />
-      <Space h='xl' />
-      {data ? (
-        data
-          .sort((a, b) => (a.id > b.id ? 1 : -1))
-          .map((value, idx) => (
-            <Box
-              key={idx}
-              sx={{
-                display: 'flex',
-                alignItems: 'top',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Checkbox
-                label={
-                  <Text strikethrough={value.isDone} sx={{ cursor: 'pointer' }}>
-                    {value.taskName}
-                  </Text>
-                }
-                radius='xl'
-                size='md'
-                mb='md'
-                checked={value.isDone}
-                onChange={() => handleChange(value.id)}
-              />
-              <FaTrashAlt
-                size={20}
-                color='red'
-                style={{ cursor: 'pointer' }}
-                onClick={() => handleDelete(value.taskName, Number(value.id))}
-              />
-            </Box>
-          ))
+      {session ? (
+        <>
+          <AddTodo mutate={mutate} />
+          <Space h='xl' />
+          {data ? (
+            data
+              .sort((a, b) => (a.id > b.id ? 1 : -1))
+              .map((value, idx) => (
+                <Box
+                  key={idx}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'top',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Checkbox
+                    label={
+                      <Text
+                        strikethrough={value.isDone}
+                        sx={{ cursor: 'pointer' }}
+                      >
+                        {value.taskName}
+                      </Text>
+                    }
+                    radius='xl'
+                    size='md'
+                    mb='md'
+                    checked={value.isDone}
+                    onChange={() => handleChange(value.id)}
+                  />
+                  <FaTrashAlt
+                    size={20}
+                    color='red'
+                    style={{ cursor: 'pointer' }}
+                    onClick={() =>
+                      handleDelete(value.taskName, Number(value.id))
+                    }
+                  />
+                </Box>
+              ))
+          ) : (
+            <div style={{ width: '100%', position: 'relative' }}>
+              <LoadingOverlay visible={true} overlayBlur={2} />
+            </div>
+          )}
+        </>
       ) : (
-        <div style={{ width: '100%', position: 'relative' }}>
-          <LoadingOverlay visible={true} overlayBlur={2} />
-        </div>
+        <Group position='center'>
+          <Text>You should sign in first</Text>
+        </Group>
       )}
     </Layout>
   );

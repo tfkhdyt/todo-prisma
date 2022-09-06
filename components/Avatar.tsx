@@ -55,6 +55,7 @@ function MyAvatar({ session }: Props) {
           src={session.user?.image}
           alt={session.user?.name as string}
           mr='md'
+          sx={{ cursor: 'pointer' }}
         />
       </Menu.Target>
 

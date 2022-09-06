@@ -15,10 +15,10 @@ import { FaTrashAlt } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
 import useSWR from 'swr';
 
-import AddTodo from '../components/AddTodo';
-import Layout from '../components/Layout';
-import Loading from '../components/Loading';
-import { Task } from '../types/task';
+import AddTodo from '@/components/AddTodo';
+import Layout from '@/components/Layout';
+import Loading from '@/components/Loading';
+import { Task } from '@/types/task';
 
 const fetcher = (link: string) => fetch(link).then((res) => res.json());
 

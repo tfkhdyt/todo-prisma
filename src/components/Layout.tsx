@@ -1,5 +1,5 @@
 import { AppShell, Container, useMantineTheme } from '@mantine/core';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 
 import MyHeader from './Header';
 
@@ -9,7 +9,6 @@ interface Props {
 
 export default function Layout({ children }: Props) {
   const theme = useMantineTheme();
-  const [opened, setOpened] = useState(false);
   return (
     <AppShell
       styles={{

@@ -25,25 +25,13 @@ function AddTodo({ mutate }: Props) {
       autoClose: false,
       disallowClose: true,
     });
-    try {
-      const response = await fetch('/api/task', {
-        method: 'POST',
-        body: JSON.stringify({
-          taskName,
-        }),
-      });
-      mutate();
-      setOpened(false);
-      setTaskName('');
-      updateNotification({
-        id: 'add-task',
-        color: 'teal',
-        title: 'Success',
-        message: 'Task added successfully',
-        icon: <AiOutlineCheck size={16} />,
-        autoClose: 3000,
-      });
-    } catch (err) {
+    const response = await fetch('/api/task', {
+      method: 'POST',
+      body: JSON.stringify({
+        taskName,
+      }),
+    });
+    if (!response.ok) {
       updateNotification({
         id: 'add-task',
         color: 'red',
@@ -52,7 +40,19 @@ function AddTodo({ mutate }: Props) {
         icon: <IoMdClose size={16} />,
         autoClose: 3000,
       });
+      return;
     }
+    mutate();
+    setOpened(false);
+    setTaskName('');
+    updateNotification({
+      id: 'add-task',
+      color: 'teal',
+      title: 'Success',
+      message: 'Task added successfully',
+      icon: <AiOutlineCheck size={16} />,
+      autoClose: 3000,
+    });
   };
 
   return (

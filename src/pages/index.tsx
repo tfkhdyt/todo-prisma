@@ -1,12 +1,4 @@
-import {
-  Alert,
-  Box,
-  Checkbox,
-  Group,
-  LoadingOverlay,
-  Space,
-  Text,
-} from '@mantine/core';
+import { Alert, Box, Checkbox, Group, Space, Text } from '@mantine/core';
 import { openConfirmModal } from '@mantine/modals';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import { useSession } from 'next-auth/react';
@@ -23,8 +15,8 @@ import { Task } from '@/types/task';
 const fetcher = (link: string) => fetch(link).then((res) => res.json());
 
 const Home = () => {
-  const { data, error, mutate } = useSWR<Task[]>('/api/task', fetcher);
-  const { data: session, status } = useSession();
+  const { data, mutate } = useSWR<Task[]>('/api/task', fetcher);
+  const { status } = useSession();
 
   const handleChange = async (id: string) => {
     showNotification({

@@ -15,7 +15,6 @@ import { GoSignIn } from 'react-icons/go';
 import { SiTodoist } from 'react-icons/si';
 
 import MyAvatar from './Avatar';
-import Loading from './Loading';
 
 function MyHeader() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -39,19 +38,19 @@ function MyHeader() {
             onClick={() => router.push('/')}
           >
             <SiTodoist size={24} />
-            <Text weight='bold' size='xl' ml='xs'>
+            <Text weight={600} size='xl' ml='xs'>
               To Do List
             </Text>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {status === 'loading' && <Loading />}
-            {!session ? (
+            {status === 'loading' && <></>}
+            {status === 'unauthenticated' && (
               <Button mr='md' leftIcon={<GoSignIn />} onClick={() => signIn()}>
                 Sign in
               </Button>
-            ) : (
-              <MyAvatar session={session} />
             )}
+            {status === 'authenticated' && <MyAvatar session={session} />}
+
             <ActionIcon
               variant='outline'
               color={dark ? 'yellow' : 'blue'}

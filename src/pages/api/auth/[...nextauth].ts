@@ -3,7 +3,7 @@ import NextAuth from 'next-auth';
 import GithubProviders from 'next-auth/providers/github';
 import GoogleProviders from 'next-auth/providers/google';
 
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),

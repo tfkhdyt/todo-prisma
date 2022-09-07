@@ -10,7 +10,7 @@ import {
 } from 'next-auth/react';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
 
-import Layout from '../../components/Layout';
+import Layout from '@/components/Layout';
 
 interface Props {
   providers: Record<

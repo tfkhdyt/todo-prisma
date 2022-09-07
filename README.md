@@ -55,7 +55,7 @@ pnpm prisma migrate dev
 - `NEXTAUTH_URL` = 'Your app URL'
 - `SECRET` = 'Random string'
 
-Check `.env.example` file for more info.
+Check [`.env.example`](https://github.com/tfkhdyt/todo-prisma/blob/docs/readme/.env.example) file for more info.
 
 ### Usage
 
@@ -66,6 +66,10 @@ pnpm dev
 # production
 pnpm build
 pnpm start
+
+# if you change the database schema
+pnpm prisma migrate dev # development
+pnpm prisma migrate deploy # production
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

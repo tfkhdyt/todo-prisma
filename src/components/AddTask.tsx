@@ -73,6 +73,7 @@ function AddTask() {
         opened={opened}
         onClose={() => {
           setOpened(false);
+          setTaskName('');
         }}
         title='Add New Task'
         styles={{

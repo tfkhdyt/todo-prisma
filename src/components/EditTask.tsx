@@ -97,6 +97,7 @@ const EditTask: FC<Props> = ({ task }) => {
         opened={opened}
         onClose={() => {
           setOpened(false);
+          setTaskName(task.taskName);
         }}
         title='Edit Task'
         styles={{

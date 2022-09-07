@@ -14,7 +14,7 @@ import { useSession } from 'next-auth/react';
 import { AiFillAlert, AiOutlineCheck } from 'react-icons/ai';
 import { FaTrashAlt } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
-import { changeTaskStatus } from 'utils/mutations/changeTaskStatus';
+import { editTask } from 'utils/mutations/changeTaskStatus';
 
 import AddTodo from '@/components/AddTodo';
 import Layout from '@/components/Layout';
@@ -31,7 +31,7 @@ const Home = () => {
     getTasks
   );
 
-  const changeStatusMutation = useMutation(changeTaskStatus, {
+  const changeStatusMutation = useMutation(editTask, {
     onSuccess: () => {
       queryClient.invalidateQueries(['todos']);
     },
@@ -189,10 +189,11 @@ const Home = () => {
                     size='md'
                     mb='md'
                     checked={value.isDone}
-                    onChange={() =>
+                    onChange={(e) =>
                       changeStatusMutation.mutate({
                         id: value.id,
                         taskName: value.taskName,
+                        isDone: e.target.checked,
                       })
                     }
                     styles={{

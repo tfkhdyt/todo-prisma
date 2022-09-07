@@ -6,7 +6,8 @@
       "@/lib/*": ["lib/*"],
       "@/prisma/*": ["prisma/*"],
       "@/styles/*": ["styles/*"],
-      "@/types/*": ["types/*"]
+      "@/types/*": ["types/*"],
+      "@/utils/*": ["utils/*"]
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],

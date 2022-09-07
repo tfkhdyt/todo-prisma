@@ -38,6 +38,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
             withNormalizeCSS
             theme={{
               colorScheme,
+              fontFamily: 'Rubik, sans-serif',
             }}
           >
             <NotificationsProvider>

@@ -55,7 +55,7 @@ pnpm prisma migrate dev
 - `NEXTAUTH_URL` = 'Your app URL'
 - `SECRET` = 'Random string'
 
-Check [`.env.example`](https://github.com/tfkhdyt/todo-prisma/blob/docs/readme/.env.example) file for more info.
+Check [`.env.example`](https://github.com/tfkhdyt/todo-prisma/blob/main/.env.example) file for more info.
 
 ### Usage
 

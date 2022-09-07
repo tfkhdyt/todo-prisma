@@ -21,9 +21,14 @@ const MyAvatar: FC<Props> = ({ session }) => {
     openConfirmModal({
       title: 'Log out',
       centered: true,
-      children: <Text size='sm'>Are you sure you want to logout?</Text>,
+      children: <Text size='sm'>Are you sure you want to log out?</Text>,
       labels: { confirm: 'Yes', cancel: 'Cancel' },
       confirmProps: { color: 'red' },
+      styles: {
+        title: {
+          fontWeight: 500,
+        },
+      },
       onConfirm: () => {
         showNotification({
           id: 'logout',
@@ -59,7 +64,6 @@ const MyAvatar: FC<Props> = ({ session }) => {
         <Avatar
           src={session.user?.image}
           alt={session.user?.name as string}
-          mr='md'
           sx={{ cursor: 'pointer' }}
         />
       </Menu.Target>

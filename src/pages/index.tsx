@@ -5,6 +5,7 @@ import {
   Center,
   Checkbox,
   Group,
+  Skeleton,
   Space,
   Text,
   useMantineTheme,
@@ -28,11 +29,8 @@ import { getTasks } from '@/utils/queries/getTasks';
 
 const Home = () => {
   const queryClient = useQueryClient();
-
-  const { data, isLoading, isError, error } = useQuery<Task[], Error>(
-    ['todos'],
-    getTasks
-  );
+  const { data: session, status } = useSession();
+  const { data, isError, error } = useQuery<Task[], Error>(['todos'], getTasks);
 
   const changeStatusMutation = useMutation(editTask, {
     onSuccess: () => {
@@ -44,8 +42,6 @@ const Home = () => {
       queryClient.invalidateQueries(['todos']);
     },
   });
-
-  const { status } = useSession();
 
   const theme = useMantineTheme();
 
@@ -123,19 +119,19 @@ const Home = () => {
       onConfirm: () => {
         deleteMutation.mutate({ id, taskName });
       },
+      styles: {
+        title: {
+          fontWeight: 500,
+        },
+      },
     });
   };
 
   return (
     <Layout>
-      {status === 'loading' && isLoading && (
-        /*    <Alert icon={<Loader size={16} />} title='Authenticating...'>
-          Please wait while on authenticating process...
-        </Alert> */
+      {status === 'loading' ? (
         <Loading />
-      )}
-
-      {status === 'unauthenticated' && (
+      ) : !session ? (
         <Group position='center'>
           <Alert
             icon={<AiFillAlert size={16} />}
@@ -147,9 +143,7 @@ const Home = () => {
             You should sign in first
           </Alert>
         </Group>
-      )}
-
-      {status === 'authenticated' && (
+      ) : (
         <>
           <AddTask />
           <Space h='xl' />
@@ -169,62 +163,76 @@ const Home = () => {
             </Group>
           )}
 
-          {data && data.length > 0 ? (
-            data
-              .sort((a, b) => (a.id > b.id ? 1 : -1))
-              .map((value, idx) => (
-                <Center
-                  inline
-                  key={idx}
-                  mb='sm'
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Checkbox
-                    label={
-                      <Text
-                        strikethrough={value.isDone}
-                        sx={{ cursor: 'pointer' }}
-                      >
-                        {value.taskName}
-                      </Text>
-                    }
-                    radius='xl'
-                    size='md'
-                    checked={value.isDone}
-                    onChange={(e) =>
-                      changeStatusMutation.mutate({
-                        id: value.id,
-                        taskName: value.taskName,
-                        isDone: e.target.checked,
-                      })
-                    }
-                    styles={{
-                      input: {
-                        cursor: 'pointer',
-                      },
-                    }}
-                  />
-                  <Box sx={{ display: 'flex' }}>
-                    <EditTask task={value} />
-                    <ActionIcon size='lg' color='red.7' variant='outline'>
-                      <FaTrashAlt
-                        size={18}
-                        color={theme.colors.red[7]}
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => handleDelete(value.taskName, value.id)}
+          {data ? (
+            <>
+              {data.length > 0 ? (
+                data
+                  .sort((a, b) => (a.id > b.id ? 1 : -1))
+                  .map((value, idx) => (
+                    <Center
+                      inline
+                      key={idx}
+                      mb='sm'
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Checkbox
+                        label={
+                          <Text
+                            strikethrough={value.isDone}
+                            sx={{ cursor: 'pointer' }}
+                          >
+                            {value.taskName}
+                          </Text>
+                        }
+                        radius='xl'
+                        size='md'
+                        checked={value.isDone}
+                        onChange={(e) =>
+                          changeStatusMutation.mutate({
+                            id: value.id,
+                            taskName: value.taskName,
+                            isDone: e.target.checked,
+                          })
+                        }
+                        styles={{
+                          input: {
+                            cursor: 'pointer',
+                          },
+                        }}
                       />
-                    </ActionIcon>
-                  </Box>
-                </Center>
-              ))
+                      <Box sx={{ display: 'flex' }}>
+                        <EditTask task={value} />
+                        <ActionIcon size='lg' color='red.7' variant='outline'>
+                          <FaTrashAlt
+                            size={18}
+                            color={theme.colors.red[7]}
+                            style={{ cursor: 'pointer' }}
+                            onClick={() =>
+                              handleDelete(value.taskName, value.id)
+                            }
+                          />
+                        </ActionIcon>
+                      </Box>
+                    </Center>
+                  ))
+              ) : (
+                <Center>Task still empty, please add some</Center>
+              )}
+            </>
           ) : (
-            <Center>Task still empty, please add some</Center>
+            <Skeleton />
           )}
         </>
       )}
+
+      {/* {status === 'loading' && isLoading && ( */}
+      {/* <Alert icon={<Loader size={16} />} title='Authenticating...'>
+          Please wait while on authenticating process...
+        </Alert> */}
+      {/* )} */}
     </Layout>
   );
 };

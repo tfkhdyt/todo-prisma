@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Alert,
   Box,
   Center,
@@ -6,6 +7,7 @@ import {
   Group,
   Space,
   Text,
+  useMantineTheme,
 } from '@mantine/core';
 import { openConfirmModal } from '@mantine/modals';
 import { showNotification, updateNotification } from '@mantine/notifications';
@@ -14,13 +16,14 @@ import { useSession } from 'next-auth/react';
 import { AiFillAlert, AiOutlineCheck } from 'react-icons/ai';
 import { FaTrashAlt } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
-import { changeTaskStatus } from 'utils/mutations/changeTaskStatus';
 
-import AddTodo from '@/components/AddTodo';
+import AddTask from '@/components/AddTask';
+import EditTask from '@/components/EditTask';
 import Layout from '@/components/Layout';
 import Loading from '@/components/Loading';
 import { Task } from '@/types/task';
 import { deleteTask } from '@/utils/mutations/deleteTask';
+import { editTask } from '@/utils/mutations/editTask';
 import { getTasks } from '@/utils/queries/getTasks';
 
 const Home = () => {
@@ -31,7 +34,7 @@ const Home = () => {
     getTasks
   );
 
-  const changeStatusMutation = useMutation(changeTaskStatus, {
+  const changeStatusMutation = useMutation(editTask, {
     onSuccess: () => {
       queryClient.invalidateQueries(['todos']);
     },
@@ -43,6 +46,8 @@ const Home = () => {
   });
 
   const { status } = useSession();
+
+  const theme = useMantineTheme();
 
   if (changeStatusMutation.isLoading) {
     showNotification({
@@ -111,7 +116,7 @@ const Home = () => {
       title: `Delete ${taskName}`,
       centered: true,
       children: (
-        <Text size='sm'>Are you sure you want to delete {taskName}?</Text>
+        <Text size='sm'>Are you sure you want to delete "{taskName}'?</Text>
       ),
       labels: { confirm: 'Delete', cancel: "No don't delete it" },
       confirmProps: { color: 'red' },
@@ -146,7 +151,7 @@ const Home = () => {
 
       {status === 'authenticated' && (
         <>
-          <AddTodo />
+          <AddTask />
           <Space h='xl' />
           {/* {isLoading && <Loading />} */}
 
@@ -189,10 +194,11 @@ const Home = () => {
                     size='md'
                     mb='md'
                     checked={value.isDone}
-                    onChange={() =>
+                    onChange={(e) =>
                       changeStatusMutation.mutate({
                         id: value.id,
                         taskName: value.taskName,
+                        isDone: e.target.checked,
                       })
                     }
                     styles={{
@@ -201,12 +207,17 @@ const Home = () => {
                       },
                     }}
                   />
-                  <FaTrashAlt
-                    size={20}
-                    color='red'
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleDelete(value.taskName, value.id)}
-                  />
+                  <Box sx={{ display: 'flex' }}>
+                    <EditTask task={value} />
+                    <ActionIcon size='lg' color='red.7' variant='outline'>
+                      <FaTrashAlt
+                        size={18}
+                        color={theme.colors.red[7]}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleDelete(value.taskName, value.id)}
+                      />
+                    </ActionIcon>
+                  </Box>
                 </Box>
               ))
           ) : (

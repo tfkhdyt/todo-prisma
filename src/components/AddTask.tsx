@@ -7,20 +7,9 @@ import { FaSave } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
 import { MdAddCircle } from 'react-icons/md';
 
-const addTask = async (taskName: string) => {
-  const response = await fetch(`/api/task/`, {
-    method: 'POST',
-    body: JSON.stringify({
-      taskName,
-    }),
-  });
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
+import { addTask } from '@/utils/mutations/addTask';
 
-function AddTodo() {
+function AddTask() {
   const [opened, setOpened] = useState(false);
   const [taskName, setTaskName] = useState('');
   const queryClient = useQueryClient();
@@ -45,7 +34,7 @@ function AddTodo() {
         id: 'add-task',
         color: 'red',
         title: 'Failed',
-        message: 'Status failed to add',
+        message: `"${addTaskMutation.variables}" failed to add`,
         icon: <IoMdClose size={16} />,
         autoClose: 3000,
       });
@@ -54,7 +43,7 @@ function AddTodo() {
         id: 'add-task',
         color: 'teal',
         title: 'Success',
-        message: 'Task added successfully',
+        message: `"${addTaskMutation.variables}" added successfully`,
         icon: <AiOutlineCheck size={16} />,
         autoClose: 3000,
       });
@@ -118,4 +107,4 @@ function AddTodo() {
   );
 }
 
-export default AddTodo;
+export default AddTask;

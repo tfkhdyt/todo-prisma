@@ -1,4 +1,12 @@
-import { Alert, Box, Checkbox, Group, Space, Text } from '@mantine/core';
+import {
+  Alert,
+  Box,
+  Center,
+  Checkbox,
+  Group,
+  Space,
+  Text,
+} from '@mantine/core';
 import { openConfirmModal } from '@mantine/modals';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -6,44 +14,24 @@ import { useSession } from 'next-auth/react';
 import { AiFillAlert, AiOutlineCheck } from 'react-icons/ai';
 import { FaTrashAlt } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
+import { changeTaskStatus } from 'utils/mutations/changeTaskStatus';
 
 import AddTodo from '@/components/AddTodo';
 import Layout from '@/components/Layout';
 import Loading from '@/components/Loading';
 import { Task } from '@/types/task';
-
-const getTodos = async () => {
-  const response = await fetch('/api/task');
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
-const changeTodoStatus = async (task: Task) => {
-  const response = await fetch(`/api/task/${task.id}`, { method: 'PATCH' });
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
-const deleteTask = async (task: Task) => {
-  const response = await fetch(`/api/task/${task.id}`, { method: 'DELETE' });
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
+import { deleteTask } from '@/utils/mutations/deleteTask';
+import { getTasks } from '@/utils/queries/getTasks';
 
 const Home = () => {
-  // const { data, mutate } = useSWR<Task[]>('/api/task', fetcher);
   const queryClient = useQueryClient();
+
   const { data, isLoading, isError, error } = useQuery<Task[], Error>(
     ['todos'],
-    getTodos
+    getTasks
   );
-  const changeStatusMutation = useMutation(changeTodoStatus, {
+
+  const changeStatusMutation = useMutation(changeTaskStatus, {
     onSuccess: () => {
       queryClient.invalidateQueries(['todos']);
     },
@@ -53,6 +41,7 @@ const Home = () => {
       queryClient.invalidateQueries(['todos']);
     },
   });
+
   const { status } = useSession();
 
   if (changeStatusMutation.isLoading) {
@@ -134,7 +123,12 @@ const Home = () => {
 
   return (
     <Layout>
-      {status === 'loading' && <Loading />}
+      {(status === 'loading' || isLoading) && (
+        /*    <Alert icon={<Loader size={16} />} title='Authenticating...'>
+          Please wait while on authenticating process...
+        </Alert> */
+        <Loading />
+      )}
 
       {status === 'unauthenticated' && (
         <Group position='center'>
@@ -154,7 +148,7 @@ const Home = () => {
         <>
           <AddTodo />
           <Space h='xl' />
-          {isLoading && <Loading />}
+          {/* {isLoading && <Loading />} */}
 
           {isError && (
             <Group position='center'>
@@ -170,7 +164,7 @@ const Home = () => {
             </Group>
           )}
 
-          {data ? (
+          {data && data.length > 0 ? (
             data
               .sort((a, b) => (a.id > b.id ? 1 : -1))
               .map((value, idx) => (
@@ -195,7 +189,6 @@ const Home = () => {
                     size='md'
                     mb='md'
                     checked={value.isDone}
-                    // onChange={() => handleChange(value.id)}
                     onChange={() =>
                       changeStatusMutation.mutate({
                         id: value.id,
@@ -217,7 +210,7 @@ const Home = () => {
                 </Box>
               ))
           ) : (
-            <Loading />
+            <Center>Task still empty, please add some</Center>
           )}
         </>
       )}

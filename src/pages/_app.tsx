@@ -3,7 +3,7 @@ import {
   ColorSchemeProvider,
   MantineProvider,
 } from '@mantine/core';
-import { useHotkeys, useLocalStorage } from '@mantine/hooks';
+import { useColorScheme, useHotkeys, useLocalStorage } from '@mantine/hooks';
 import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -15,9 +15,10 @@ import { FC } from 'react';
 const queryClient = new QueryClient();
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
+  const preferredColorScheme = useColorScheme();
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'mantine-color-scheme',
-    defaultValue: 'light',
+    defaultValue: preferredColorScheme,
     getInitialValueInEffect: true,
   });
 

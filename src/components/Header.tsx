@@ -2,8 +2,10 @@ import {
   ActionIcon,
   Box,
   Button,
+  Center,
   Container,
   Header,
+  Loader,
   Text,
   Tooltip,
   useMantineColorScheme,
@@ -43,21 +45,23 @@ function MyHeader() {
               To Do List
             </Text>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {status === 'loading' && <></>}
-            {status === 'unauthenticated' && (
-              <Button mr='md' leftIcon={<GoSignIn />} onClick={() => signIn()}>
+          <Center inline>
+            {status === 'loading' ? (
+              <Loader />
+            ) : !session ? (
+              <Button leftIcon={<GoSignIn />} onClick={() => signIn()}>
                 Sign in
               </Button>
+            ) : (
+              <MyAvatar session={session} />
             )}
-            {status === 'authenticated' && <MyAvatar session={session} />}
-
             <Tooltip label='Ctrl + J' position='bottom' withArrow>
               <ActionIcon
                 variant='outline'
                 color={dark ? 'yellow' : 'blue'}
                 onClick={() => toggleColorScheme()}
                 size='lg'
+                ml='md'
               >
                 {dark ? (
                   <BsFillSunFill size={18} />
@@ -66,7 +70,7 @@ function MyHeader() {
                 )}
               </ActionIcon>
             </Tooltip>
-          </Box>
+          </Center>
         </Box>
       </Container>
     </Header>

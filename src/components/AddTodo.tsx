@@ -86,6 +86,11 @@ function AddTodo() {
           setOpened(false);
         }}
         title='Add New Task'
+        styles={{
+          title: {
+            fontWeight: 500,
+          },
+        }}
       >
         <form onSubmit={handleSubmit}>
           <TextInput

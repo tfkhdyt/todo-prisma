@@ -1,9 +1,19 @@
 import { NextApiHandler } from 'next';
+import { unstable_getServerSession } from 'next-auth';
 import { getSession } from 'next-auth/react';
 
 import { prisma } from '@/lib/prisma';
 
+import { authOptions } from '../auth/[...nextauth]';
+
 const handler: NextApiHandler = async (req, res) => {
+  const _session = await unstable_getServerSession(req, res, authOptions);
+
+  if (!_session) {
+    res.status(401).json({ message: 'You must be logged in.' });
+    return;
+  }
+
   const session = await getSession({ req });
 
   if (req.method === 'GET') {

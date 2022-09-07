@@ -128,7 +128,7 @@ const Home = () => {
 
   return (
     <Layout>
-      {(status === 'loading' || isLoading) && (
+      {status === 'loading' && isLoading && (
         /*    <Alert icon={<Loader size={16} />} title='Authenticating...'>
           Please wait while on authenticating process...
         </Alert> */

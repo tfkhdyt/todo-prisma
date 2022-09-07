@@ -12,13 +12,14 @@ import Head from 'next/head';
 import { SessionProvider } from 'next-auth/react';
 import { FC } from 'react';
 
+const queryClient = new QueryClient();
+
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'mantine-color-scheme',
     defaultValue: 'light',
     getInitialValueInEffect: true,
   });
-  const queryClient = new QueryClient();
 
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));

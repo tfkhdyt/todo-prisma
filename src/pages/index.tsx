@@ -1,69 +1,123 @@
 import { Alert, Box, Checkbox, Group, Space, Text } from '@mantine/core';
 import { openConfirmModal } from '@mantine/modals';
 import { showNotification, updateNotification } from '@mantine/notifications';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { AiFillAlert, AiOutlineCheck } from 'react-icons/ai';
 import { FaTrashAlt } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
-import useSWR from 'swr';
 
 import AddTodo from '@/components/AddTodo';
 import Layout from '@/components/Layout';
 import Loading from '@/components/Loading';
 import { Task } from '@/types/task';
 
-const fetcher = (link: string) => fetch(link).then((res) => res.json());
+const getTodos = async () => {
+  const response = await fetch('/api/task');
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
+const changeTodoStatus = async (task: Task) => {
+  const response = await fetch(`/api/task/${task.id}`, { method: 'PATCH' });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
+const deleteTask = async (task: Task) => {
+  const response = await fetch(`/api/task/${task.id}`, { method: 'DELETE' });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
 
 const Home = () => {
-  const { data, mutate } = useSWR<Task[]>('/api/task', fetcher);
+  // const { data, mutate } = useSWR<Task[]>('/api/task', fetcher);
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError, error } = useQuery<Task[], Error>(
+    ['todos'],
+    getTodos
+  );
+  const changeStatusMutation = useMutation(changeTodoStatus, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todos']);
+    },
+  });
+  const deleteMutation = useMutation(deleteTask, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todos']);
+    },
+  });
   const { status } = useSession();
 
-  const handleChange = async (id: string) => {
+  if (changeStatusMutation.isLoading) {
     showNotification({
-      id: `change-status-${id}`,
+      id: `change-status-${changeStatusMutation.variables?.id}`,
       loading: true,
       title: 'Loading...',
       message: 'Wait for a moment',
       autoClose: false,
       disallowClose: true,
     });
-    try {
-      const res = await fetch(`/api/task/${id}`, {
-        method: 'PATCH',
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        updateNotification({
-          id: `change-status-${id}`,
-          color: 'red',
-          title: 'Failed',
-          message: `"${data.taskName}" failed to change`,
-          icon: <IoMdClose size={16} />,
-          autoClose: 3000,
-        });
-      }
-      mutate();
+  } else {
+    if (changeStatusMutation.isError) {
       updateNotification({
-        id: `change-status-${id}`,
-        color: 'teal',
-        title: 'Success',
-        message: `"${data.taskName}" status changed successfully`,
-        icon: <AiOutlineCheck size={16} />,
-        autoClose: 3000,
-      });
-    } catch (err) {
-      updateNotification({
-        id: `change-status-${id}`,
+        id: `change-status-${changeStatusMutation.variables?.id}`,
         color: 'red',
         title: 'Failed',
-        message: 'Status failed to change',
+        message: `"${changeStatusMutation.variables?.taskName}" failed to change`,
         icon: <IoMdClose size={16} />,
         autoClose: 3000,
       });
+    } else if (changeStatusMutation.isSuccess) {
+      updateNotification({
+        id: `change-status-${changeStatusMutation.variables?.id}`,
+        color: 'teal',
+        title: 'Success',
+        message: `"${changeStatusMutation.variables?.taskName}" status changed successfully`,
+        icon: <AiOutlineCheck size={16} />,
+        autoClose: 3000,
+      });
     }
-  };
+  }
 
-  const handleDelete = (taskName: string, id: number) => {
+  if (deleteMutation.isLoading) {
+    showNotification({
+      id: `delete-status-${deleteMutation.variables?.id}`,
+      loading: true,
+      title: 'Loading...',
+      message: 'Wait for a moment',
+      autoClose: false,
+      disallowClose: true,
+    });
+  } else {
+    if (deleteMutation.isError) {
+      updateNotification({
+        id: `delete-status-${deleteMutation.variables?.id}`,
+        color: 'red',
+        title: 'Failed',
+        message: `"${deleteMutation.variables?.taskName}" failed to delete`,
+        icon: <IoMdClose size={16} />,
+        autoClose: 3000,
+      });
+    } else if (deleteMutation.isSuccess) {
+      updateNotification({
+        id: `delete-status-${deleteMutation.variables?.id}`,
+        color: 'teal',
+        title: 'Success',
+        message: `"${deleteMutation.variables?.taskName}" deleted successfully`,
+        icon: <AiOutlineCheck size={16} />,
+        autoClose: 3000,
+      });
+    }
+  }
+
+  const handleDelete = (taskName: string, id: string) => {
     openConfirmModal({
       title: `Delete ${taskName}`,
       centered: true,
@@ -72,48 +126,51 @@ const Home = () => {
       ),
       labels: { confirm: 'Delete', cancel: "No don't delete it" },
       confirmProps: { color: 'red' },
-      onConfirm: async () => {
-        showNotification({
-          id: `delete-status-${id}`,
-          loading: true,
-          title: 'Loading...',
-          message: 'Wait for a moment',
-          autoClose: false,
-          disallowClose: true,
-        });
-        const res = await fetch(`/api/task/${id}`, {
-          method: 'DELETE',
-        });
-        if (!res.ok) {
-          updateNotification({
-            id: `change-status-${id}`,
-            color: 'red',
-            title: 'Failed',
-            message: `"${taskName}" failed to delete`,
-            icon: <IoMdClose size={16} />,
-            autoClose: 3000,
-          });
-        }
-        mutate();
-        updateNotification({
-          id: `delete-status-${id}`,
-          color: 'teal',
-          title: 'Success',
-          message: `"${taskName}" deleted successfully`,
-          icon: <AiOutlineCheck size={16} />,
-          autoClose: 3000,
-        });
+      onConfirm: () => {
+        deleteMutation.mutate({ id, taskName });
       },
     });
   };
 
   return (
     <Layout>
-      {status === 'authenticated' ? (
+      {status === 'loading' && <Loading />}
+
+      {status === 'unauthenticated' && (
+        <Group position='center'>
+          <Alert
+            icon={<AiFillAlert size={16} />}
+            title='Unauthenticated'
+            color='red'
+            radius='md'
+            sx={{ width: '100%' }}
+          >
+            You should sign in first
+          </Alert>
+        </Group>
+      )}
+
+      {status === 'authenticated' && (
         <>
-          <AddTodo mutate={mutate} />
+          <AddTodo />
           <Space h='xl' />
-          {data && data.length >= 0 ? (
+          {isLoading && <Loading />}
+
+          {isError && (
+            <Group position='center'>
+              <Alert
+                icon={<AiFillAlert size={16} />}
+                title='Unauthenticated'
+                color='red'
+                radius='md'
+                sx={{ width: '100%' }}
+              >
+                {error.message}
+              </Alert>
+            </Group>
+          )}
+
+          {data ? (
             data
               .sort((a, b) => (a.id > b.id ? 1 : -1))
               .map((value, idx) => (
@@ -138,15 +195,24 @@ const Home = () => {
                     size='md'
                     mb='md'
                     checked={value.isDone}
-                    onChange={() => handleChange(value.id)}
+                    // onChange={() => handleChange(value.id)}
+                    onChange={() =>
+                      changeStatusMutation.mutate({
+                        id: value.id,
+                        taskName: value.taskName,
+                      })
+                    }
+                    styles={{
+                      input: {
+                        cursor: 'pointer',
+                      },
+                    }}
                   />
                   <FaTrashAlt
                     size={20}
                     color='red'
                     style={{ cursor: 'pointer' }}
-                    onClick={() =>
-                      handleDelete(value.taskName, Number(value.id))
-                    }
+                    onClick={() => handleDelete(value.taskName, value.id)}
                   />
                 </Box>
               ))
@@ -154,20 +220,6 @@ const Home = () => {
             <Loading />
           )}
         </>
-      ) : status === 'loading' ? (
-        <Loading />
-      ) : (
-        <Group position='center'>
-          <Alert
-            icon={<AiFillAlert size={16} />}
-            title='Unauthenticated'
-            color='red'
-            radius='md'
-            sx={{ width: '100%' }}
-          >
-            You should sign in first
-          </Alert>
-        </Group>
       )}
     </Layout>
   );

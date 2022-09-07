@@ -8,7 +8,7 @@ import { AiOutlineMail, AiOutlineUser } from 'react-icons/ai';
 import { GoSignOut } from 'react-icons/go';
 import { IoMdClose } from 'react-icons/io';
 
-import { useStyles } from './hooks/useStyles';
+import { useStyles } from '@/hooks/useStyles';
 
 interface Props {
   session: Session;

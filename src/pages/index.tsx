@@ -173,11 +173,12 @@ const Home = () => {
             data
               .sort((a, b) => (a.id > b.id ? 1 : -1))
               .map((value, idx) => (
-                <Box
+                <Center
+                  inline
                   key={idx}
+                  mb='sm'
                   sx={{
                     display: 'flex',
-                    alignItems: 'top',
                     justifyContent: 'space-between',
                   }}
                 >
@@ -192,7 +193,6 @@ const Home = () => {
                     }
                     radius='xl'
                     size='md'
-                    mb='md'
                     checked={value.isDone}
                     onChange={(e) =>
                       changeStatusMutation.mutate({
@@ -218,7 +218,7 @@ const Home = () => {
                       />
                     </ActionIcon>
                   </Box>
-                </Box>
+                </Center>
               ))
           ) : (
             <Center>Task still empty, please add some</Center>

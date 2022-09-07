@@ -1,8 +1,7 @@
 import { Button, Group, Modal, Space, TextInput } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { FaSave } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';

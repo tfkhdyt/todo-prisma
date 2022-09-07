@@ -3,15 +3,20 @@ import { openConfirmModal } from '@mantine/modals';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
+import { FC } from 'react';
 import { AiOutlineMail, AiOutlineUser } from 'react-icons/ai';
 import { GoSignOut } from 'react-icons/go';
 import { IoMdClose } from 'react-icons/io';
+
+import { useStyles } from './hooks/useStyles';
 
 interface Props {
   session: Session;
 }
 
-function MyAvatar({ session }: Props) {
+const MyAvatar: FC<Props> = ({ session }) => {
+  const { classes } = useStyles();
+
   const handleLogout = () =>
     openConfirmModal({
       title: 'Log out',
@@ -61,10 +66,10 @@ function MyAvatar({ session }: Props) {
 
       <Menu.Dropdown mr='md'>
         <Menu.Label>My Profile</Menu.Label>
-        <Menu.Item icon={<AiOutlineUser />} sx={{ cursor: 'default' }}>
+        <Menu.Item icon={<AiOutlineUser />} className={classes.menuItem}>
           {session.user?.name}
         </Menu.Item>
-        <Menu.Item icon={<AiOutlineMail />} sx={{ cursor: 'default' }}>
+        <Menu.Item icon={<AiOutlineMail />} className={classes.menuItem}>
           {session.user?.email}
         </Menu.Item>
         <Menu.Divider />
@@ -74,6 +79,6 @@ function MyAvatar({ session }: Props) {
       </Menu.Dropdown>
     </Menu>
   );
-}
+};
 
 export default MyAvatar;

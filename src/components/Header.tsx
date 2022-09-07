@@ -5,6 +5,7 @@ import {
   Container,
   Header,
   Text,
+  Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
 import { useRouter } from 'next/router';
@@ -51,19 +52,20 @@ function MyHeader() {
             )}
             {status === 'authenticated' && <MyAvatar session={session} />}
 
-            <ActionIcon
-              variant='outline'
-              color={dark ? 'yellow' : 'blue'}
-              onClick={() => toggleColorScheme()}
-              title='Toggle color scheme'
-              size='lg'
-            >
-              {dark ? (
-                <BsFillSunFill size={18} />
-              ) : (
-                <BsFillMoonFill size={18} />
-              )}
-            </ActionIcon>
+            <Tooltip label='Ctrl + J' position='bottom' withArrow>
+              <ActionIcon
+                variant='outline'
+                color={dark ? 'yellow' : 'blue'}
+                onClick={() => toggleColorScheme()}
+                size='lg'
+              >
+                {dark ? (
+                  <BsFillSunFill size={18} />
+                ) : (
+                  <BsFillMoonFill size={18} />
+                )}
+              </ActionIcon>
+            </Tooltip>
           </Box>
         </Box>
       </Container>

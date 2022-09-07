@@ -1,4 +1,5 @@
-import { Button, Group, Modal, Space, TextInput } from '@mantine/core';
+import { Button, Group, Modal, Space, TextInput, Tooltip } from '@mantine/core';
+import { useHotkeys } from '@mantine/hooks';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormEvent, useState } from 'react';
@@ -18,6 +19,7 @@ function AddTask() {
       queryClient.invalidateQueries(['todos']);
     },
   });
+  useHotkeys([['ctrl+E ', () => setOpened((state) => !state)]]);
 
   if (addTaskMutation.isLoading) {
     showNotification({
@@ -61,14 +63,16 @@ function AddTask() {
 
   return (
     <>
-      <Button
-        leftIcon={<MdAddCircle size={18} />}
-        onClick={() => {
-          setOpened(true);
-        }}
-      >
-        Add New Task
-      </Button>
+      <Tooltip label='Ctrl + E' position='bottom' withArrow>
+        <Button
+          leftIcon={<MdAddCircle size={18} />}
+          onClick={() => {
+            setOpened(true);
+          }}
+        >
+          Add New Task
+        </Button>
+      </Tooltip>
       <Modal
         opened={opened}
         onClose={() => {

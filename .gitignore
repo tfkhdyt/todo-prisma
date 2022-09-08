@@ -38,3 +38,7 @@ next-env.d.ts
 
 # migration files
 prisma/migrations
+
+# service worker
+public/sw.js
+public/workbox-*.js

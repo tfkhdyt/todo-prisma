@@ -4,7 +4,7 @@
 
 <p align='center'>Simple To Do List App with Authentication.</p>
 
-## Build With
+## Tech Stack
 
 - [Next.js](https://nextjs.org/)
 - [TypeScript](https://www.npmjs.com/package/typescript)
@@ -14,6 +14,7 @@
 - [PostgreSQL](https://www.postgresql.org/)
 - [React Query](https://tanstack.com/query)
 - [React Icons](https://www.npmjs.com/package/react-icons)
+- [Next PWA](https://www.npmjs.com/package/next-pwa)
 
 ## Getting Started
 

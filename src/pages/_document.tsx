@@ -1,6 +1,8 @@
 import { createGetInitialProps } from '@mantine/next';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 
+import MetaTags from '@/components/MetaTags';
+
 const getInitialProps = createGetInitialProps();
 
 export default class _Document extends Document {
@@ -15,6 +17,7 @@ export default class _Document extends Document {
             rel='stylesheet'
           />
           <link rel='shortcut icon' href='/favicon.ico' type='image/x-icon' />
+          <MetaTags />
         </Head>
         <body>
           <Main />

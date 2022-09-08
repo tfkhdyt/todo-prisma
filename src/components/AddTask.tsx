@@ -1,11 +1,9 @@
 import { Button, Group, Modal, Space, TextInput, Tooltip } from '@mantine/core';
 import { useHotkeys } from '@mantine/hooks';
-import { showNotification, updateNotification } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { handleAddTaskMutation } from 'handlers/handleAddTaskMutation';
 import { FormEvent, useState } from 'react';
-import { AiOutlineCheck } from 'react-icons/ai';
 import { FaSave } from 'react-icons/fa';
-import { IoMdClose } from 'react-icons/io';
 import { MdAddCircle } from 'react-icons/md';
 
 import { addTask } from '@/utils/mutations/addTask';
@@ -21,36 +19,7 @@ function AddTask() {
   });
   useHotkeys([['ctrl+E ', () => setOpened((state) => !state)]]);
 
-  if (addTaskMutation.isLoading) {
-    showNotification({
-      id: 'add-task',
-      loading: true,
-      title: 'Loading...',
-      message: 'Wait for a moment',
-      autoClose: false,
-      disallowClose: true,
-    });
-  } else {
-    if (addTaskMutation.isError) {
-      updateNotification({
-        id: 'add-task',
-        color: 'red',
-        title: 'Failed',
-        message: `"${addTaskMutation.variables}" failed to add`,
-        icon: <IoMdClose size={16} />,
-        autoClose: 3000,
-      });
-    } else if (addTaskMutation.isSuccess) {
-      updateNotification({
-        id: 'add-task',
-        color: 'teal',
-        title: 'Success',
-        message: `"${addTaskMutation.variables}" added successfully`,
-        icon: <AiOutlineCheck size={16} />,
-        autoClose: 3000,
-      });
-    }
-  }
+  handleAddTaskMutation(addTaskMutation);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

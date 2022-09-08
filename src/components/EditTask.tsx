@@ -7,13 +7,11 @@ import {
   TextInput,
   useMantineTheme,
 } from '@mantine/core';
-import { showNotification, updateNotification } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { handleEditTaskMutation } from 'handlers/handleEditTaskMutation';
 import { FC, FormEvent, useState } from 'react';
-import { AiOutlineCheck } from 'react-icons/ai';
 import { BsFillPencilFill } from 'react-icons/bs';
 import { FaSave } from 'react-icons/fa';
-import { IoMdClose } from 'react-icons/io';
 
 import { Task } from '@/types/task';
 import { editTask } from '@/utils/mutations/editTask';
@@ -33,36 +31,7 @@ const EditTask: FC<Props> = ({ task }) => {
     },
   });
 
-  if (editTaskMutation.isLoading) {
-    showNotification({
-      id: `edit-task-${editTaskMutation.variables?.id}`,
-      loading: true,
-      title: 'Loading...',
-      message: 'Wait for a moment',
-      autoClose: false,
-      disallowClose: true,
-    });
-  } else {
-    if (editTaskMutation.isError) {
-      updateNotification({
-        id: `edit-task-${editTaskMutation.variables?.id}`,
-        color: 'red',
-        title: 'Failed',
-        message: `"${editTaskMutation.variables?.taskName}" failed to edit`,
-        icon: <IoMdClose size={16} />,
-        autoClose: 3000,
-      });
-    } else if (editTaskMutation.isSuccess) {
-      updateNotification({
-        id: `edit-task-${editTaskMutation.variables?.id}`,
-        color: 'teal',
-        title: 'Success',
-        message: `"${editTaskMutation.variables?.taskName}" updated successfully`,
-        icon: <AiOutlineCheck size={16} />,
-        autoClose: 3000,
-      });
-    }
-  }
+  handleEditTaskMutation(editTaskMutation);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

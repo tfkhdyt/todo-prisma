@@ -3,15 +3,13 @@ import { UseMutationResult } from '@tanstack/react-query';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { IoMdClose } from 'react-icons/io';
 
-import { Task } from '@/types/task';
-
-export const handleDeleteTaskMutation = (
+export const handleAddTaskMutation = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  deleteTaskMutation: UseMutationResult<any, unknown, Task, unknown>
+  addTaskMutation: UseMutationResult<any, unknown, string, unknown>
 ) => {
-  if (deleteTaskMutation.isLoading) {
+  if (addTaskMutation.isLoading) {
     showNotification({
-      id: `delete-status-${deleteTaskMutation.variables?.id}`,
+      id: 'add-task',
       loading: true,
       title: 'Loading...',
       message: 'Wait for a moment',
@@ -19,20 +17,20 @@ export const handleDeleteTaskMutation = (
       disallowClose: true,
     });
   } else {
-    if (deleteTaskMutation.isError) {
+    if (addTaskMutation.isError) {
       updateNotification({
-        id: `delete-status-${deleteTaskMutation.variables?.id}`,
+        id: 'add-task',
         color: 'red',
         title: 'Failed',
-        message: `"${deleteTaskMutation.variables?.taskName}" failed to delete`,
+        message: `"${addTaskMutation.variables}" failed to add`,
         icon: <IoMdClose size={16} />,
         autoClose: 2000,
       });
-    } else if (deleteTaskMutation.isSuccess) {
+    } else if (addTaskMutation.isSuccess) {
       updateNotification({
-        id: `delete-status-${deleteTaskMutation.variables?.id}`,
+        id: 'add-task',
         color: 'teal',
-        title: `"${deleteTaskMutation.variables?.taskName}" deleted successfully`,
+        title: `"${addTaskMutation.variables}" added successfully`,
         message: undefined,
         icon: <AiOutlineCheck size={16} />,
         autoClose: 2000,
